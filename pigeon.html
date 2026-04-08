@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pigeon Launcher</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --y:#FFD600;--yl:#FFF9C4;
+  --dk:#111827;--p:#1f2937;--b:#374151;
+  --g:#3a5c1a;--ghi:#6a9a2e;--glo:#1e3209;
+  --r:#7a1515;--rhi:#bb3333;--rlo:#2e0000;
+  --gr:#374151;--grhi:#4b5563;--grlo:#1f2937;
+  --tx:#e5e7eb;--mu:#6b7280;
+}
+body{font-family:'Nunito',sans-serif;background:var(--y);color:var(--dk);overflow-x:hidden;}
+
+/* PIXEL BG */
+.pbg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.pb{position:absolute;border:3px solid rgba(0,0,0,.2);opacity:.12;animation:fup linear infinite;}
+@keyframes fup{0%{transform:translateY(110vh) rotate(0deg);}100%{transform:translateY(-200px) rotate(540deg);}}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--dk);border-bottom:4px solid var(--y);height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;}
+.nlogo{display:flex;align-items:center;gap:12px;font-family:'Press Start 2P',monospace;font-size:13px;color:var(--y);cursor:pointer;}
+.nlogo img{width:36px;height:36px;image-rendering:pixelated;}
+.nlogo .fb{width:36px;height:36px;background:var(--y);display:flex;align-items:center;justify-content:center;font-family:'Press Start 2P',monospace;font-size:14px;color:var(--dk);border:2px solid #fff;}
+.nlinks{display:flex;gap:1.5rem;}
+.nlinks a{color:#d1d5db;text-decoration:none;font-weight:700;font-size:14px;cursor:pointer;transition:color .2s;}
+.nlinks a:hover{color:var(--y);}
+
+/* MC BUTTON */
+.btn{display:inline-block;font-family:'Press Start 2P',monospace;font-size:10px;color:#fff;background:var(--g);border:none;cursor:pointer;padding:12px 22px;white-space:nowrap;transition:filter .1s,transform .1s;box-shadow:inset -3px -3px 0 var(--glo),inset 3px 3px 0 var(--ghi),0 5px 0 #0a1400;}
+.btn:hover{filter:brightness(1.12);transform:translateY(-2px);}
+.btn:active{transform:translateY(3px);box-shadow:inset -3px -3px 0 var(--ghi),inset 3px 3px 0 var(--glo),0 2px 0 #0a1400;}
+.btn.big{font-size:12px;padding:15px 34px;}
+.btn.red{background:var(--r);box-shadow:inset -3px -3px 0 var(--rlo),inset 3px 3px 0 var(--rhi),0 5px 0 #100000;}
+.btn.red:active{box-shadow:inset -3px -3px 0 var(--rhi),inset 3px 3px 0 var(--rlo),0 2px 0 #100000;}
+.btn.gray{background:var(--gr);box-shadow:inset -3px -3px 0 var(--grlo),inset 3px 3px 0 var(--grhi),0 5px 0 #090d12;}
+.btn.gray:active{box-shadow:inset -3px -3px 0 var(--grhi),inset 3px 3px 0 var(--grlo),0 2px 0 #090d12;}
+
+/* HERO */
+.hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 2rem 4rem;background:linear-gradient(150deg,#FFD600 0%,#FFF9C4 45%,#FFD600 100%);}
+.hpig{width:170px;height:170px;image-rendering:pixelated;filter:drop-shadow(0 8px 22px rgba(0,0,0,.22));animation:bob 2.8s ease-in-out infinite;margin-bottom:1.5rem;}
+.hpig-fb{width:170px;height:170px;background:var(--dk);border:6px solid var(--dk);display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;animation:bob 2.8s ease-in-out infinite;}
+.hpig-fb span{font-family:'Press Start 2P',monospace;font-size:20px;color:var(--y);}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg);}50%{transform:translateY(-15px) rotate(2deg);}}
+.hero h1{font-family:'Press Start 2P',monospace;font-size:clamp(24px,5vw,52px);color:var(--dk);line-height:1.35;text-shadow:4px 4px 0 rgba(0,0,0,.1);margin-bottom:.75rem;}
+.hero h1 span{color:#fff;-webkit-text-stroke:2px var(--dk);}
+.hero p{font-size:17px;font-weight:700;color:var(--dk);max-width:500px;margin:0 auto 2.5rem;opacity:.72;line-height:1.6;}
+
+/* DOWNLOAD */
+.dlsec{position:relative;z-index:1;background:#fff;padding:5rem 2rem;text-align:center;border-top:6px solid var(--dk);border-bottom:6px solid var(--dk);}
+.stitle{font-family:'Press Start 2P',monospace;font-size:clamp(13px,2.2vw,22px);color:var(--dk);text-align:center;margin-bottom:2.5rem;}
+.oscards{display:flex;gap:2rem;justify-content:center;flex-wrap:wrap;margin-bottom:2.5rem;}
+.osc{background:var(--yl);border:4px solid var(--dk);padding:2rem 2.5rem;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:6px 6px 0 var(--dk);min-width:150px;position:relative;}
+.osc:hover{transform:translate(-3px,-3px);box-shadow:9px 9px 0 var(--dk);}
+.osc.sel{background:var(--y);transform:translate(-3px,-3px);box-shadow:9px 9px 0 var(--dk);}
+.osc.sel::after{content:'SELECTED';position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--g);color:#fff;font-family:'Press Start 2P',monospace;font-size:7px;padding:4px 8px;border:2px solid var(--dk);white-space:nowrap;}
+.osc svg{width:52px;height:52px;display:block;margin:0 auto 1rem;}
+.osc h3{font-family:'Press Start 2P',monospace;font-size:10px;color:var(--dk);}
+#dlwrap{min-height:72px;display:flex;align-items:center;justify-content:center;}
+.dlhint{font-family:'Press Start 2P',monospace;font-size:10px;color:#9ca3af;}
+@keyframes pin{0%{transform:scale(.4);opacity:0;}100%{transform:scale(1);opacity:1;}}
+.pop{animation:pin .3s cubic-bezier(.34,1.56,.64,1);}
+
+/* FEATURES */
+.featsec{position:relative;z-index:1;background:var(--y);padding:5rem 2rem;}
+.featgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.75rem;max-width:1000px;margin:0 auto;}
+.fc{background:#fff;border:4px solid var(--dk);padding:2rem 1.5rem;box-shadow:6px 6px 0 var(--dk);transition:transform .15s;}
+.fc:hover{transform:translate(-3px,-3px);}
+.fc .ico{width:34px;height:34px;background:var(--dk);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;}
+.fc .ico svg{width:20px;height:20px;fill:var(--y);}
+.fc h3{font-family:'Press Start 2P',monospace;font-size:8px;margin-bottom:.75rem;color:var(--dk);}
+.fc p{font-size:13px;color:#4b5563;line-height:1.65;}
+
+/* REGISTER */
+.regsec{position:relative;z-index:1;background:var(--dk);padding:5rem 2rem;text-align:center;}
+.regsec .stitle{color:var(--y);}
+.regform{background:#fff;border:4px solid var(--y);padding:2.5rem;max-width:420px;margin:0 auto;box-shadow:8px 8px 0 var(--y);}
+.fg{margin-bottom:1.2rem;text-align:left;}
+.fg label{display:block;font-family:'Press Start 2P',monospace;font-size:8px;margin-bottom:6px;color:var(--dk);}
+.fg input{width:100%;padding:11px 13px;border:3px solid var(--dk);font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;background:var(--yl);outline:none;transition:border-color .2s,background .2s;}
+.fg input:focus{border-color:var(--g);background:#fff;}
+.altl{display:block;margin-top:1.2rem;font-size:12px;color:#6b7280;}
+.altl a{color:var(--g);font-weight:700;cursor:pointer;text-decoration:underline;}
+
+/* FOOTER */
+footer{position:relative;z-index:1;background:#080c14;color:#6b7280;text-align:center;padding:2rem;font-size:12px;border-top:4px solid var(--y);line-height:2;}
+footer strong{color:var(--y);font-family:'Press Start 2P',monospace;font-size:9px;}
+
+/* MODALS */
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:800;align-items:center;justify-content:center;}
+.mo.open{display:flex;}
+.mb{background:#fff;border:4px solid var(--dk);box-shadow:10px 10px 0 var(--y);padding:2.5rem;max-width:420px;width:90%;text-align:center;}
+.mb h2{font-family:'Press Start 2P',monospace;font-size:12px;margin-bottom:1rem;color:var(--dk);}
+.mb p{font-size:14px;color:#4b5563;margin-bottom:1.5rem;line-height:1.65;}
+.mpig{width:68px;height:68px;image-rendering:pixelated;animation:bob 2s ease-in-out infinite;display:block;margin:0 auto 1.25rem;}
+.mpfb{width:68px;height:68px;background:var(--dk);display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;}
+.mpfb span{font-family:'Press Start 2P',monospace;font-size:12px;color:var(--y);}
+.ptrack{height:20px;background:#e5e7eb;border:3px solid var(--dk);overflow:hidden;margin:.75rem 0;}
+.pfill{height:100%;width:0%;transition:width .25s linear;background:repeating-linear-gradient(45deg,var(--g),var(--g) 10px,var(--ghi) 10px,var(--ghi) 20px);}
+.plbl{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--dk);margin-bottom:5px;text-align:left;}
+
+/* ════════════════════════════
+   LAUNCHER — real app frame
+════════════════════════════ */
+#SL{
+  display:none;position:fixed;inset:0;
+  background:#0d0d0d;flex-direction:column;
+  font-family:'Courier New',Courier,monospace;
+}
+#SL.on{display:flex;}
+
+/* Title bar */
+.lbar{background:#000;border-bottom:2px solid #FFD600;height:38px;display:flex;align-items:center;justify-content:space-between;padding:0 1rem;flex-shrink:0;}
+.lbar-l{display:flex;align-items:center;gap:10px;font-size:12px;color:#FFD600;letter-spacing:1px;font-weight:bold;}
+.lbar-l img{width:22px;height:22px;image-rendering:pixelated;}
+.lbar-l .bfb{width:22px;height:22px;background:#FFD600;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#000;}
+.wbts{display:flex;gap:6px;}
+.wbt{width:13px;height:13px;border-radius:50%;border:none;cursor:pointer;}
+.wbt.mn{background:#f59e0b;}.wbt.mx{background:#10b981;}.wbt.cl{background:#ef4444;}
+
+/* Sidebar + content */
+.lbody{display:flex;flex:1;overflow:hidden;}
+.lside{width:185px;flex-shrink:0;background:#111;border-right:2px solid #1a1a1a;display:flex;flex-direction:column;padding:.5rem 0;overflow-y:auto;}
+.lslbl{font-size:9px;color:#333;padding:.8rem 1rem .25rem;letter-spacing:2px;}
+.lnav{display:flex;align-items:center;gap:9px;padding:9px 1rem;cursor:pointer;border-left:3px solid transparent;font-size:12px;color:#555;transition:all .12s;}
+.lnav:hover{background:rgba(255,214,0,.06);color:#bbb;}
+.lnav.on{background:rgba(255,214,0,.1);border-left-color:#FFD600;color:#FFD600;}
+.lnav svg{width:14px;height:14px;fill:currentColor;flex-shrink:0;}
+
+/* Main */
+.lmain{flex:1;overflow-y:auto;background:#111;padding:1.25rem;}
+.lp{display:none;}
+.lp.on{display:block;animation:fp .15s ease;}
+@keyframes fp{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:translateY(0);}}
+.lpt{font-size:11px;color:#FFD600;letter-spacing:1px;margin-bottom:1rem;padding-bottom:.6rem;border-bottom:1px solid #1e1e1e;}
+
+/* Inputs */
+.li{background:#0d0d0d;border:1px solid #2a2a2a;color:#e5e7eb;padding:8px 12px;font-family:'Courier New',monospace;font-size:13px;outline:none;width:100%;}
+.li:focus{border-color:#FFD600;}
+.ls{background:#0d0d0d;border:1px solid #2a2a2a;color:#e5e7eb;padding:8px 12px;font-family:'Courier New',monospace;font-size:13px;cursor:pointer;outline:none;}
+.ls:focus{border-color:#FFD600;}
+
+/* Cards */
+.lcard{background:#161616;border:1px solid #222;padding:.8rem 1rem;margin-bottom:.5rem;display:flex;align-items:center;gap:.8rem;transition:border-color .15s;}
+.lcard:hover{border-color:#444;}
+.lci{flex:1;}
+.lci h3{font-size:13px;color:#e5e7eb;margin-bottom:2px;}
+.lci p{font-size:11px;color:#444;}
+.lcr{display:flex;align-items:center;gap:.5rem;}
+
+/* Empty */
+.lempty{text-align:center;padding:2.5rem 1rem;color:#2a2a2a;font-size:11px;line-height:2.5;border:1px dashed #1e1e1e;}
+.lempty span{display:block;font-size:13px;color:#444;margin-bottom:.4rem;}
+
+/* Form */
+.lfrow{display:flex;gap:.6rem;margin-bottom:.6rem;flex-wrap:wrap;}
+.lfcol{display:flex;flex-direction:column;gap:4px;flex:1;min-width:130px;}
+.lfcol label{font-size:9px;color:#444;letter-spacing:1px;}
+
+/* Settings */
+.lsg{background:#161616;border:1px solid #1e1e1e;padding:1rem;margin-bottom:1rem;}
+.lsg h3{font-size:9px;color:#FFD600;margin-bottom:.85rem;padding-bottom:.4rem;border-bottom:1px solid #1e1e1e;letter-spacing:1px;}
+.lsr{display:flex;align-items:center;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid #161616;gap:1rem;}
+.lsr:last-child{border-bottom:none;}
+.lsl{font-size:12px;color:#bbb;}
+.lsl small{display:block;color:#444;font-size:10px;}
+.tog{position:relative;width:40px;height:20px;flex-shrink:0;}
+.tog input{display:none;}
+.tsl{position:absolute;inset:0;background:#1a1a1a;border:1px solid #2a2a2a;cursor:pointer;transition:background .2s;}
+.tsl::after{content:'';position:absolute;left:2px;top:50%;transform:translateY(-50%);width:12px;height:12px;background:#444;transition:left .2s,background .2s;}
+.tog input:checked+.tsl{background:var(--g);border-color:var(--ghi);}
+.tog input:checked+.tsl::after{left:calc(100% - 14px);background:#fff;}
+.lr{-webkit-appearance:none;width:120px;height:6px;background:#1e1e1e;border:1px solid #2a2a2a;outline:none;cursor:pointer;}
+.lr::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:18px;background:#FFD600;border:2px solid #000;cursor:pointer;}
+.rv{font-size:11px;color:#888;min-width:52px;text-align:right;}
+
+/* AI */
+.aichat{background:#0d0d0d;border:1px solid #1e1e1e;height:260px;overflow-y:auto;padding:.75rem;display:flex;flex-direction:column;gap:.6rem;margin-bottom:.6rem;}
+.aimsg{display:flex;gap:8px;align-items:flex-start;}
+.aimsg.u{flex-direction:row-reverse;}
+.aiav{width:26px;height:26px;background:#1e1e1e;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;color:#FFD600;font-weight:bold;}
+.aibub{background:#161616;border:1px solid #222;padding:8px 12px;font-size:11px;line-height:1.6;color:#bbb;max-width:80%;font-family:'Courier New',monospace;}
+.aimsg.u .aibub{background:#0d1f12;border-color:#1a3020;}
+.airow{display:flex;gap:.5rem;}
+
+/* Log */
+.logbox{background:#000;border:1px solid #1a1a1a;height:200px;overflow-y:auto;padding:.6rem;font-family:'Courier New',monospace;font-size:11px;line-height:1.7;}
+.lw{color:#f59e0b;}.le{color:#f87171;}.li2{color:#60a5fa;}.lk{color:#34d399;}
+
+/* Launch progress */
+.lpbar{margin:.75rem 0;display:none;}
+.lpbl{font-size:10px;color:#444;margin-bottom:4px;letter-spacing:1px;}
+.lptr{height:14px;background:#0d0d0d;border:1px solid #222;overflow:hidden;}
+.lpfi{height:100%;width:0%;transition:width .25s linear;background:repeating-linear-gradient(45deg,var(--g),var(--g) 6px,var(--ghi) 6px,var(--ghi) 12px);}
+
+/* Status bar */
+.lstat{background:#000;border-top:1px solid #1a1a1a;height:24px;display:flex;align-items:center;padding:0 1rem;gap:1.5rem;font-size:10px;color:#333;flex-shrink:0;}
+.sdot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#10b981;margin-right:4px;animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+/* Virus */
+.viro{display:none;position:fixed;inset:0;background:rgba(90,0,0,.97);z-index:9999;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:1rem;font-family:'Courier New',monospace;}
+.viro.show{display:flex;animation:vf .7s steps(1) infinite;}
+@keyframes vf{0%,100%{background:rgba(90,0,0,.97);}50%{background:rgba(50,0,0,.99);}}
+.viro h1{font-size:clamp(16px,3vw,28px);color:#fff;letter-spacing:2px;text-shadow:0 0 20px red;}
+.viro p{color:#fca5a5;font-size:14px;max-width:420px;line-height:1.8;}
+</style>
+</head>
+<body>
+
+<div class="pbg" id="pbg"></div>
+
+<!-- VIRUS OVERLAY -->
+<div class="viro" id="viro">
+  <div style="font-size:13px;color:#f87171;letter-spacing:2px;border:2px solid #f87171;padding:.5rem 1.5rem;">!! ALERT !!</div>
+  <h1>VIRUS DETECTED</h1>
+  <p>Pigeon has found a threat on your computer.<br>Please restart your computer now.<br><br>When Pigeon starts again it will locate and remove the threat automatically.</p>
+  <button class="btn red" onclick="document.getElementById('viro').classList.remove('show')">DISMISS — RESTART IS RECOMMENDED</button>
+</div>
+
+<!-- MODAL: ACCOUNT CREATED -->
+<div class="mo" id="mo-ok">
+  <div class="mb">
+    <img class="mpig" src="pigeon.png" alt="P" onerror="this.style.display='none';document.getElementById('mok-fb').style.display='flex'">
+    <div class="mpfb" id="mok-fb" style="display:none"><span>P</span></div>
+    <h2>ACCOUNT CREATED</h2>
+    <p>Welcome to Pigeon. Download the launcher, open it, select a Minecraft version and start playing.</p>
+    <button class="btn" onclick="closeMo('mo-ok');document.getElementById('dl').scrollIntoView({behavior:'smooth'})">GO TO DOWNLOAD</button>
+  </div>
+</div>
+
+<!-- MODAL: LOGIN -->
+<div class="mo" id="mo-login">
+  <div class="mb">
+    <h2>LOG IN</h2>
+    <div class="fg"><label>EMAIL</label><input type="email" id="li-e" placeholder="you@email.com"></div>
+    <div class="fg"><label>PASSWORD</label><input type="password" id="li-p" placeholder="Your password"></div>
+    <button class="btn" style="width:100%;margin-bottom:.6rem" onclick="doLogin()">LOG IN</button>
+    <button class="btn gray" style="width:100%;font-size:9px" onclick="closeMo('mo-login')">CANCEL</button>
+  </div>
+</div>
+
+<!-- MODAL: DOWNLOAD -->
+<div class="mo" id="mo-dl">
+  <div class="mb">
+    <img class="mpig" src="pigeon.png" alt="P" onerror="this.style.display='none';document.getElementById('mdl-fb').style.display='flex'">
+    <div class="mpfb" id="mdl-fb" style="display:none"><span>P</span></div>
+    <h2 id="dl-h">DOWNLOADING PIGEON</h2>
+    <p id="dl-p">Preparing your launcher...</p>
+    <div class="plbl" id="dl-lbl">CONNECTING...</div>
+    <div class="ptrack"><div class="pfill" id="dl-fill"></div></div>
+    <button class="btn gray" id="dl-btn" style="width:100%;margin-top:.75rem;font-size:9px" disabled>PLEASE WAIT...</button>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <div class="nlogo" onclick="goHome()">
+    <img src="pigeon.png" alt="P" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <div class="fb" style="display:none">P</div>
+    PIGEON
+  </div>
+  <div class="nlinks">
+    <a onclick="sc('dl')">Download</a>
+    <a onclick="sc('features')">Features</a>
+    <a onclick="sc('register')">Register</a>
+  </div>
+</nav>
+
+<!-- ═══ WEBSITE ═══ -->
+<div id="SW">
+
+  <section class="hero">
+    <img class="hpig" src="pigeon.png" alt="Pigeon" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <div class="hpig-fb" style="display:none"><span>PIGEON</span></div>
+    <h1>PIGEON<br><span>LAUNCHER</span></h1>
+    <p>The free, fast and safe way to play Minecraft. No account required. No data collected. Pure gameplay.</p>
+    <button class="btn big" onclick="document.getElementById('dl').scrollIntoView({behavior:'smooth'})">GET PIGEON NOW</button>
+  </section>
+
+  <section class="dlsec" id="dl">
+    <h2 class="stitle">CHOOSE YOUR SYSTEM</h2>
+    <div class="oscards">
+      <div class="osc" onclick="pickOS(this,'windows')">
+        <svg viewBox="0 0 56 56"><rect x="4" y="4" width="22" height="22" fill="#1e3a5f"/><rect x="30" y="4" width="22" height="22" fill="#1e3a5f"/><rect x="4" y="30" width="22" height="22" fill="#1e3a5f"/><rect x="30" y="30" width="22" height="22" fill="#1e3a5f"/><rect x="6" y="6" width="18" height="18" fill="#3b82f6"/><rect x="32" y="6" width="18" height="18" fill="#3b82f6"/><rect x="6" y="32" width="18" height="18" fill="#3b82f6"/><rect x="32" y="32" width="18" height="18" fill="#3b82f6"/></svg>
+        <h3>WINDOWS</h3>
+      </div>
+      <div class="osc" onclick="pickOS(this,'linux')">
+        <svg viewBox="0 0 56 56"><rect x="20" y="2" width="16" height="14" fill="#374151"/><rect x="22" y="4" width="12" height="10" fill="#f59e0b"/><rect x="10" y="16" width="36" height="24" fill="#374151"/><rect x="12" y="18" width="32" height="20" fill="#f59e0b"/><rect x="16" y="22" width="6" height="6" fill="#111827"/><rect x="34" y="22" width="6" height="6" fill="#111827"/><rect x="22" y="30" width="12" height="4" fill="#111827"/><rect x="14" y="40" width="10" height="12" fill="#374151"/><rect x="32" y="40" width="10" height="12" fill="#374151"/><rect x="16" y="42" width="6" height="8" fill="#f59e0b"/><rect x="34" y="42" width="6" height="8" fill="#f59e0b"/></svg>
+        <h3>LINUX</h3>
+      </div>
+      <div class="osc" onclick="pickOS(this,'mac')">
+        <svg viewBox="0 0 56 56"><rect x="16" y="2" width="8" height="8" fill="#374151"/><rect x="18" y="4" width="4" height="4" fill="#6b7280"/><rect x="8" y="10" width="40" height="32" fill="#374151"/><rect x="10" y="12" width="36" height="28" fill="#9ca3af"/><rect x="4" y="42" width="48" height="6" fill="#374151"/><rect x="20" y="48" width="16" height="4" fill="#6b7280"/></svg>
+        <h3>MACBOOK</h3>
+      </div>
+    </div>
+    <div id="dlwrap"><p class="dlhint">Select your operating system above</p></div>
+    <p style="margin-top:1.5rem;font-size:10px;color:#9ca3af;font-family:'Press Start 2P',monospace">v1.0.0 — Free. Always.</p>
+  </section>
+
+  <section class="featsec" id="features">
+    <h2 class="stitle">WHY PIGEON?</h2>
+    <div class="featgrid">
+      <div class="fc"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V5L12 1z"/></svg></div><h3>100% SAFE</h3><p>No data collection, no spyware. Virus detected? Pigeon tells you to restart and removes it automatically on next launch.</p></div>
+      <div class="fc"><div class="ico"><svg viewBox="0 0 24 24"><path d="M13 2.05v2.02c3.95.49 7 3.85 7 7.93 0 3.21-1.81 6-4.72 7.72L13 17v5h5l-1.22-1.22C19.91 19.07 22 15.76 22 12c0-5.18-3.95-9.45-9-9.95zM11 2.05C5.95 2.55 2 6.82 2 12c0 3.76 2.09 7.07 5.22 8.78L6 22h5V2.05z"/></svg></div><h3>FAST LAUNCH</h3><p>Downloads only what is needed and boots Minecraft fast. FPS Boost is built in with no extra setup required.</p></div>
+      <div class="fc"><div class="ico"><svg viewBox="0 0 24 24"><path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.89 2-2V5c0-1.11-.89-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"/></svg></div><h3>SINGLEPLAYER AND MULTIPLAYER</h3><p>Create your own worlds or join any server by IP address. Full support with no extra configuration needed.</p></div>
+      <div class="fc"><div class="ico"><svg viewBox="0 0 24 24"><path d="M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4c-1.1 0-2 .9-2 2v4H.5C-.12 11 0 12.12 0 12.5 0 13.88 1.12 15 2.5 15H4v4c0 1.1.9 2 2 2h4v-1.5C10 22.88 11.12 24 12.5 24s2.5-1.12 2.5-2.5V21h4c1.1 0 2-.9 2-2v-4h1.5c1.38 0 2.5-1.12 2.5-2.5S21.88 11 20.5 11z"/></svg></div><h3>MODS AND PACKS</h3><p>Install mod packs and resource packs directly from inside the launcher with one click.</p></div>
+      <div class="fc"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg></div><h3>CUSTOM SKINS</h3><p>Enter your Minecraft username and Pigeon loads your skin from NameMC. No account needed.</p></div>
+      <div class="fc"><div class="ico"><svg viewBox="0 0 24 24"><path d="M20 9V7c0-1.1-.9-2-2-2h-3c0-1.66-1.34-3-3-3S9 3.34 9 5H6c-1.1 0-2 .9-2 2v2c-1.66 0-3 1.34-3 3s1.34 3 3 3v4c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-4c1.66 0 3-1.34 3-3s-1.34-3-3-3z"/></svg></div><h3>AI ASSISTANT</h3><p>Pigeon detects and fixes errors automatically. You never need to read or paste crash logs yourself.</p></div>
+    </div>
+  </section>
+
+  <section class="regsec" id="register">
+    <h2 class="stitle">CREATE YOUR FREE ACCOUNT</h2>
+    <p style="color:#6b7280;margin-bottom:2rem;font-size:13px">Optional. You can open Pigeon and play without an account.</p>
+    <div class="regform">
+      <div class="fg"><label>USERNAME</label><input type="text" id="ru" placeholder="YourUsername"></div>
+      <div class="fg"><label>EMAIL</label><input type="email" id="re" placeholder="you@email.com"></div>
+      <div class="fg"><label>PASSWORD</label><input type="password" id="rp" placeholder="Minimum 6 characters"></div>
+      <button class="btn" style="width:100%;padding:14px;font-size:10px;margin-top:.5rem" onclick="doReg()">CREATE ACCOUNT</button>
+      <span class="altl">Already have an account? <a onclick="openMo('mo-login')">Log in</a></span>
+    </div>
+  </section>
+
+  <footer>
+    <strong>PIGEON LAUNCHER</strong><br>
+    Not affiliated with Mojang or Microsoft. Minecraft is a trademark of Mojang AB.<br>
+    To publish: upload this file and pigeon.png to GitHub, enable GitHub Pages in repository Settings.
+  </footer>
+
+</div><!-- end website -->
+
+<!-- ═══ LAUNCHER ═══ -->
+<div id="SL">
+
+  <div class="lbar">
+    <div class="lbar-l">
+      <img src="pigeon.png" alt="P" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="bfb" style="display:none">P</div>
+      PIGEON CLIENT v1.0
+    </div>
+    <div class="wbts">
+      <button class="wbt mn"></button>
+      <button class="wbt mx"></button>
+      <button class="wbt cl" onclick="if(confirm('Exit Pigeon?'))goHome()"></button>
+    </div>
+  </div>
+
+  <div class="lbody">
+
+    <div class="lside">
+      <div class="lslbl">PLAY</div>
+      <div class="lnav on" onclick="lgo('home',this)"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg> Home</div>
+      <div class="lnav" onclick="lgo('sp',this)"><svg viewBox="0 0 24 24"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg> Singleplayer</div>
+      <div class="lnav" onclick="lgo('mp',this)"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg> Multiplayer</div>
+      <div class="lslbl">CUSTOMIZE</div>
+      <div class="lnav" onclick="lgo('skin',this)"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg> Skin</div>
+      <div class="lnav" onclick="lgo('mods',this)"><svg viewBox="0 0 24 24"><path d="M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4c-1.1 0-2 .9-2 2v4H.5C-.12 11 0 12.12 0 12.5 0 13.88 1.12 15 2.5 15H4v4c0 1.1.9 2 2 2h4v-1.5C10 22.88 11.12 24 12.5 24s2.5-1.12 2.5-2.5V21h4c1.1 0 2-.9 2-2v-4h1.5c1.38 0 2.5-1.12 2.5-2.5S21.88 11 20.5 11z"/></svg> Mods and Packs</div>
+      <div class="lslbl">SYSTEM</div>
+      <div class="lnav" onclick="lgo('settings',this)"><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94L14.4 2.81c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41L9.25 5.35C8.66 5.59 8.12 5.92 7.63 6.29L5.24 5.33c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.63-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.03-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg> Settings</div>
+      <div class="lnav" onclick="lgo('ai',this)"><svg viewBox="0 0 24 24"><path d="M20 9V7c0-1.1-.9-2-2-2h-3c0-1.66-1.34-3-3-3S9 3.34 9 5H6c-1.1 0-2 .9-2 2v2c-1.66 0-3 1.34-3 3s1.34 3 3 3v4c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-4c1.66 0 3-1.34 3-3s-1.34-3-3-3z"/></svg> AI Assistant</div>
+      <div class="lnav" onclick="lgo('log',this)"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM8 16H6v-2h2v2zm0-4H6v-2h2v2zm0-4H6V6h2v2zm10 8H10v-2h8v2zm0-4H10v-2h8v2zm0-4H10V6h8v2z"/></svg> Log</div>
+    </div>
+
+    <div class="lmain">
+
+      <!-- HOME -->
+      <div class="lp on" id="lp-home">
+        <div class="lpt">HOME</div>
+        <div style="background:#161616;border:1px solid #222;padding:1rem;margin-bottom:1rem;display:flex;align-items:center;gap:1rem;">
+          <img src="pigeon.png" style="width:48px;height:48px;image-rendering:pixelated;" alt="" onerror="this.style.display='none'">
+          <div>
+            <div style="font-size:13px;color:#FFD600;margin-bottom:4px;">PIGEON CLIENT v1.0</div>
+            <div style="font-size:11px;color:#444;">No account required. FPS Boost active. No data collected.</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:.6rem;margin-bottom:.75rem;flex-wrap:wrap;">
+          <select class="ls" id="l-ver" style="flex:1" onchange="updSt(this.value)">
+            <option>1.21.4 (Latest)</option><option>1.20.4</option><option>1.20.1</option>
+            <option>1.19.4</option><option>1.18.2</option><option>1.16.5</option>
+            <option>1.12.2</option><option>1.8.9</option>
+          </select>
+          <select class="ls" style="flex:1">
+            <option>Vanilla</option><option>Forge</option><option>Fabric</option><option>OptiFine</option>
+          </select>
+        </div>
+        <div class="lpbar" id="lpbar">
+          <div class="lpbl" id="lpbl">DOWNLOADING...</div>
+          <div class="lptr"><div class="lpfi" id="lpfi"></div></div>
+        </div>
+        <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem;">
+          <button class="btn" onclick="launchMC()">LAUNCH MINECRAFT</button>
+          <button class="btn gray" onclick="lgo('settings',document.querySelectorAll('.lnav')[6])">SETTINGS</button>
+          <button class="btn red" onclick="doScan()">VIRUS SCAN</button>
+        </div>
+        <div style="background:#161616;border:1px solid #1a1a1a;padding:.75rem;font-size:11px;color:#333;line-height:2;">
+          &gt; Pigeon v1.0 ready<br>
+          &gt; Select a version above and click LAUNCH MINECRAFT<br>
+          &gt; Create worlds in Singleplayer or add servers in Multiplayer
+        </div>
+      </div>
+
+      <!-- SINGLEPLAYER -->
+      <div class="lp" id="lp-sp">
+        <div class="lpt">SINGLEPLAYER</div>
+        <div style="display:flex;gap:.6rem;margin-bottom:1rem;">
+          <button class="btn" onclick="createWorld()">NEW WORLD</button>
+        </div>
+        <div id="wlist"></div>
+        <div class="lempty" id="wempty">
+          <span>No worlds yet.</span>
+          Create your first singleplayer world and enjoy.<br>
+          Click NEW WORLD to get started.
+        </div>
+      </div>
+
+      <!-- MULTIPLAYER -->
+      <div class="lp" id="lp-mp">
+        <div class="lpt">MULTIPLAYER</div>
+        <div style="background:#161616;border:1px solid #222;padding:1rem;margin-bottom:1rem;">
+          <div style="font-size:9px;color:#444;margin-bottom:.75rem;letter-spacing:1px;">ADD A SERVER</div>
+          <div class="lfrow">
+            <div class="lfcol"><label>SERVER NAME</label><input class="li" id="srv-n" placeholder="My Server"></div>
+            <div class="lfcol" style="flex:2"><label>SERVER ADDRESS</label><input class="li" id="srv-a" placeholder="play.example.com or 192.168.1.1:25565"></div>
+          </div>
+          <button class="btn" style="margin-top:.6rem" onclick="addSrv()">ADD SERVER</button>
+        </div>
+        <div id="srvlist"></div>
+        <div class="lempty" id="srvempty">
+          <span>No servers added yet.</span>
+          Enter a server address above and click ADD SERVER.<br>
+          Then click JOIN and enjoy multiplayer.
+        </div>
+      </div>
+
+      <!-- SKIN -->
+      <div class="lp" id="lp-skin">
+        <div class="lpt">SKIN</div>
+        <div style="background:#161616;border:1px solid #222;padding:1.25rem;text-align:center;margin-bottom:1rem;">
+          <div style="width:60px;height:60px;background:#1e1e1e;margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="#444"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+          </div>
+          <div style="font-size:11px;color:#FFD600;margin-bottom:1rem;" id="skin-lbl">Default Steve</div>
+          <button class="btn gray" style="font-size:8px;padding:7px 14px" onclick="window.open('https://namemc.com/minecraft-skins','_blank')">BROWSE NAMEMC.COM</button>
+        </div>
+        <div style="font-size:9px;color:#444;margin-bottom:.6rem;letter-spacing:1px;">ENTER YOUR MINECRAFT USERNAME</div>
+        <div style="display:flex;gap:.6rem;margin-bottom:1rem;">
+          <input class="li" id="skin-u" placeholder="YourMinecraftName" style="flex:1">
+          <button class="btn" onclick="loadSkin()">LOAD SKIN</button>
+        </div>
+        <div style="font-size:11px;color:#333;line-height:2;">
+          &gt; Enter your username above<br>
+          &gt; Pigeon opens your NameMC profile in your browser<br>
+          &gt; No account needed
+        </div>
+      </div>
+
+      <!-- MODS -->
+      <div class="lp" id="lp-mods">
+        <div class="lpt">MODS AND PACKS</div>
+        <div style="display:flex;gap:.6rem;margin-bottom:1.25rem;flex-wrap:wrap;">
+          <button class="btn" onclick="openF('mods')">MODS FOLDER</button>
+          <button class="btn gray" onclick="openF('resourcepacks')">RESOURCE PACKS</button>
+          <button class="btn gray" onclick="openF('game')">GAME FOLDER</button>
+        </div>
+        <div style="font-size:9px;color:#444;margin-bottom:.6rem;letter-spacing:1px;">HOW TO INSTALL MODS</div>
+        <div style="font-size:11px;color:#333;line-height:2;margin-bottom:1rem;">
+          &gt; Select Forge or Fabric in the launcher before launching<br>
+          &gt; Click MODS FOLDER — drop your .jar mod files inside<br>
+          &gt; Launch Minecraft and your mods will be loaded
+        </div>
+        <div style="font-size:9px;color:#444;margin-bottom:.6rem;letter-spacing:1px;">MOD PACKS</div>
+        <div class="lcard" style="cursor:default;">
+          <div class="lci"><h3>FPS Boost Pack</h3><p>OptiFine + Sodium + performance mods</p></div>
+          <button class="btn" style="font-size:8px;padding:7px 12px" onclick="installPk('FPS Boost Pack')">INSTALL</button>
+        </div>
+        <div class="lcard" style="cursor:default;">
+          <div class="lci"><h3>Adventure and Dungeons</h3><p>New biomes, mobs and dungeons</p></div>
+          <button class="btn" style="font-size:8px;padding:7px 12px" onclick="installPk('Adventure and Dungeons')">INSTALL</button>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="lp" id="lp-settings">
+        <div class="lpt">SETTINGS</div>
+        <div class="lsg">
+          <h3>VIDEO</h3>
+          <div class="lsr"><div class="lsl">Render Distance<small>Affects FPS significantly</small></div><div style="display:flex;align-items:center;gap:.5rem;"><input type="range" class="lr" min="2" max="32" value="12" oninput="this.nextElementSibling.textContent=this.value+' chunks'"><span class="rv">12 chunks</span></div></div>
+          <div class="lsr"><div class="lsl">Max FPS<small>0 = Unlimited</small></div><div style="display:flex;align-items:center;gap:.5rem;"><input type="range" class="lr" min="0" max="260" value="60" step="10" oninput="this.nextElementSibling.textContent=this.value+' fps'"><span class="rv">60 fps</span></div></div>
+          <div class="lsr"><div class="lsl">Fullscreen</div><label class="tog"><input type="checkbox"><span class="tsl"></span></label></div>
+          <div class="lsr"><div class="lsl">VSync</div><label class="tog"><input type="checkbox" checked><span class="tsl"></span></label></div>
+          <div class="lsr"><div class="lsl">FPS Boost Mode</div><label class="tog"><input type="checkbox" checked><span class="tsl"></span></label></div>
+        </div>
+        <div class="lsg">
+          <h3>AUDIO</h3>
+          <div class="lsr"><div class="lsl">Master Volume</div><div style="display:flex;align-items:center;gap:.5rem;"><input type="range" class="lr" min="0" max="100" value="80" oninput="this.nextElementSibling.textContent=this.value+'%'"><span class="rv">80%</span></div></div>
+          <div class="lsr"><div class="lsl">Music</div><div style="display:flex;align-items:center;gap:.5rem;"><input type="range" class="lr" min="0" max="100" value="60" oninput="this.nextElementSibling.textContent=this.value+'%'"><span class="rv">60%</span></div></div>
+          <div class="lsr"><div class="lsl">Sound Effects</div><div style="display:flex;align-items:center;gap:.5rem;"><input type="range" class="lr" min="0" max="100" value="100" oninput="this.nextElementSibling.textContent=this.value+'%'"><span class="rv">100%</span></div></div>
+        </div>
+        <div class="lsg">
+          <h3>PIGEON</h3>
+          <div class="lsr"><div class="lsl">Auto Virus Scan on Launch</div><label class="tog"><input type="checkbox" checked><span class="tsl"></span></label></div>
+          <div class="lsr"><div class="lsl">AI Error Auto-Fix</div><label class="tog"><input type="checkbox" checked><span class="tsl"></span></label></div>
+          <div class="lsr"><div class="lsl">Java Memory<small>Recommended 2 to 4 GB</small></div><select class="ls" style="width:90px"><option>1 GB</option><option selected>2 GB</option><option>3 GB</option><option>4 GB</option><option>6 GB</option><option>8 GB</option></select></div>
+          <div class="lsr"><div class="lsl">Game Folder</div><button class="btn gray" style="font-size:8px;padding:7px 12px" onclick="openF('game')">OPEN FOLDER</button></div>
+        </div>
+        <button class="btn" onclick="saveSet()">SAVE SETTINGS</button>
+      </div>
+
+      <!-- AI -->
+      <div class="lp" id="lp-ai">
+        <div class="lpt">AI ASSISTANT</div>
+        <div style="font-size:11px;color:#444;margin-bottom:.6rem;">Pigeon detects and fixes errors automatically. Ask a question or press AUTO-FIX.</div>
+        <div class="aichat" id="aichat">
+          <div class="aimsg"><div class="aiav">AI</div><div class="aibub">Hello. I am Pigeon Assistant. I detect and fix Minecraft errors automatically. You never need to read crash logs. Ask me anything or press AUTO-FIX.</div></div>
+          <div class="aimsg"><div class="aiav">AI</div><div class="aibub">&gt; System check complete<br>&gt; No viruses found<br>&gt; Java OK<br>&gt; RAM: 2 GB allocated<br>&gt; Ready to launch</div></div>
+        </div>
+        <div class="airow">
+          <input class="li" id="ai-in" placeholder="Describe your problem..." style="flex:1" onkeydown="if(event.key==='Enter')sendAI()">
+          <button class="btn" onclick="sendAI()">SEND</button>
+          <button class="btn gray" onclick="autoFix()">AUTO-FIX</button>
+        </div>
+      </div>
+
+      <!-- LOG -->
+      <div class="lp" id="lp-log">
+        <div class="lpt">GAME LOG</div>
+        <div style="display:flex;gap:.6rem;margin-bottom:.6rem;">
+          <button class="btn gray" style="font-size:8px;padding:7px 12px" onclick="clearLog()">CLEAR</button>
+          <button class="btn" style="font-size:8px;padding:7px 12px" onclick="autoFix()">AUTO-FIX ERRORS</button>
+        </div>
+        <div class="logbox" id="logbox">
+          <div class="lk">[OK] Pigeon Client v1.0 started</div>
+          <div class="li2">[INFO] Java 17 detected</div>
+          <div class="li2">[INFO] Minecraft 1.21.4 selected</div>
+          <div class="lw">[WARN] Render distance is high — may reduce FPS</div>
+          <div class="lk">[OK] Virus scan: no threats found</div>
+          <div class="lk">[OK] Ready to launch</div>
+        </div>
+      </div>
+
+    </div><!-- lmain -->
+  </div><!-- lbody -->
+
+  <div class="lstat">
+    <span><span class="sdot"></span>Pigeon Running</span>
+    <span id="st-v">MC 1.21.4</span>
+    <span>FPS Boost: ON</span>
+    <span>RAM: 2 GB</span>
+  </div>
+
+</div><!-- launcher -->
+
+<script>
+/* PIXEL BG */
+(function(){var c=['#3a5c1a','#8B4513','#374151','#4a3278','#1e4d6b'],bg=document.getElementById('pbg');for(var i=0;i<18;i++){var b=document.createElement('div');b.className='pb';var s=28+Math.random()*44;b.style.cssText='left:'+Math.random()*100+'%;width:'+s+'px;height:'+s+'px;animation-duration:'+(9+Math.random()*14)+'s;animation-delay:'+(-Math.random()*14)+'s;background:'+c[Math.floor(Math.random()*c.length)]+';';bg.appendChild(b);}})();
+
+/* NAV */
+function sc(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
+function goHome(){
+  document.getElementById('SL').classList.remove('on');
+  document.getElementById('SW').style.display='block';
+  document.getElementById('main-nav').style.display='flex';
+  window.scrollTo(0,0);
+}
+function openLauncher(){
+  document.getElementById('SW').style.display='none';
+  document.getElementById('SL').classList.add('on');
+  document.getElementById('main-nav').style.display='none';
+}
+
+/* MODALS */
+function openMo(id){document.getElementById(id).classList.add('open');}
+function closeMo(id){document.getElementById(id).classList.remove('open');}
+
+/* OS + DOWNLOAD */
+var curOS=null;
+function pickOS(el,os){
+  document.querySelectorAll('.osc').forEach(function(c){c.classList.remove('sel');});
+  el.classList.add('sel');curOS=os;
+  var n={windows:'WINDOWS (.EXE)',linux:'LINUX (.APPIMAGE)',mac:'MACBOOK (.DMG)'};
+  document.getElementById('dlwrap').innerHTML='<button class="btn big pop" onclick="startDL()">DOWNLOAD PIGEON FOR '+n[os]+'</button>';
+}
+function startDL(){
+  if(!curOS)return;
+  var steps=['CONNECTING...','DOWNLOADING PIGEON...','VERIFYING FILES...','PREPARING INSTALLER...','COMPLETE'];
+  var fill=document.getElementById('dl-fill'),lbl=document.getElementById('dl-lbl'),btn=document.getElementById('dl-btn');
+  document.getElementById('dl-h').textContent='DOWNLOADING PIGEON';
+  document.getElementById('dl-p').textContent='Getting your launcher ready...';
+  fill.style.width='0%';btn.disabled=true;btn.textContent='PLEASE WAIT...';
+  openMo('mo-dl');
+  var pct=0,iv=setInterval(function(){
+    pct+=Math.random()*9+3;if(pct>100)pct=100;
+    fill.style.width=pct+'%';
+    lbl.textContent=steps[Math.min(Math.floor((pct/100)*(steps.length-1)),steps.length-2)];
+    if(pct>=100){
+      clearInterval(iv);lbl.textContent=steps[4];
+      document.getElementById('dl-h').textContent='DOWNLOAD COMPLETE';
+      document.getElementById('dl-p').textContent='Pigeon is ready. Select your Minecraft version and start playing.';
+      btn.disabled=false;btn.textContent='OPEN PIGEON LAUNCHER';
+      btn.onclick=function(){closeMo('mo-dl');openLauncher();};
+    }
+  },220);
+}
+
+/* REGISTER */
+function doReg(){
+  var u=document.getElementById('ru').value.trim(),e=document.getElementById('re').value.trim(),p=document.getElementById('rp').value;
+  if(!u||!e||!p){alert('Please fill in all fields.');return;}
+  if(p.length<6){alert('Password must be at least 6 characters.');return;}
+  if(!e.includes('@')){alert('Please enter a valid email.');return;}
+  openMo('mo-ok');
+}
+function doLogin(){
+  var e=document.getElementById('li-e').value.trim(),p=document.getElementById('li-p').value;
+  if(!e||!p){alert('Please fill in all fields.');return;}
+  closeMo('mo-login');alert('Logged in. Welcome back!');
+}
+
+/* PAGES */
+function lgo(id,el){
+  document.querySelectorAll('.lp').forEach(function(p){p.classList.remove('on');});
+  document.querySelectorAll('.lnav').forEach(function(n){n.classList.remove('on');});
+  document.getElementById('lp-'+id).classList.add('on');
+  if(el)el.classList.add('on');
+}
+
+/* LAUNCH */
+function launchMC(){
+  var ver=document.getElementById('l-ver').value;
+  var bar=document.getElementById('lpbar'),fill=document.getElementById('lpfi'),lbl=document.getElementById('lpbl');
+  var steps=['CHECKING JAVA...','DOWNLOADING ASSETS...','LOADING LIBRARIES...','APPLYING FPS BOOST...','STARTING MINECRAFT...'];
+  bar.style.display='block';var pct=0;
+  var iv=setInterval(function(){
+    pct+=Math.random()*7+4;if(pct>100)pct=100;
+    fill.style.width=pct+'%';
+    lbl.textContent=steps[Math.min(Math.floor((pct/100)*steps.length),steps.length-1)];
+    if(pct>=100){clearInterval(iv);lbl.textContent='LAUNCHED — '+ver;addLog('[OK] Minecraft '+ver+' launched','lk');setTimeout(function(){bar.style.display='none';fill.style.width='0%';},4000);}
+  },200);
+}
+function updSt(v){var m=v.match(/[\d.]+/);if(m)document.getElementById('st-v').textContent='MC '+m[0];}
+
+/* VIRUS */
+function doScan(){
+  addLog('[INFO] Running virus scan...','li2');
+  setTimeout(function(){
+    if(Math.random()<0.08){document.getElementById('viro').classList.add('show');addLog('[ERROR] THREAT DETECTED — restart your computer','le');}
+    else{addLog('[OK] Scan complete: no threats found','lk');alert('Scan complete.\nNo threats detected. Your system is clean.');}
+  },1600);
+}
+
+/* WORLDS */
+var worlds=[];
+function createWorld(){
+  var name=prompt('World name:');if(!name||!name.trim())return;name=name.trim();
+  var mode=prompt('Game mode (survival / creative / adventure):','survival');
+  if(!mode)mode='survival';mode=mode.toLowerCase();
+  if(mode!=='survival'&&mode!=='creative'&&mode!=='adventure')mode='survival';
+  worlds.push({name:name,mode:mode,date:new Date().toLocaleDateString()});
+  renderWorlds();addLog('[INFO] World created: '+name+' ('+mode+')','li2');
+}
+function renderWorlds(){
+  var list=document.getElementById('wlist'),empty=document.getElementById('wempty');
+  if(worlds.length===0){list.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';list.innerHTML='';
+  worlds.forEach(function(w,i){
+    var d=document.createElement('div');d.className='lcard';
+    d.innerHTML='<div style="width:30px;height:30px;background:#1e1e1e;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="#FFD600"><circle cx="12" cy="12" r="10"/></svg></div>'
+      +'<div class="lci"><h3>'+esc(w.name)+'</h3><p>'+esc(w.mode)+' — '+esc(w.date)+'</p></div>'
+      +'<div class="lcr"><button class="btn" style="font-size:8px;padding:6px 12px" onclick="playW('+i+')">PLAY</button>'
+      +'<button class="btn red" style="font-size:8px;padding:6px 10px" onclick="delW('+i+')">X</button></div>';
+    list.appendChild(d);
+  });
+}
+function playW(i){addLog('[INFO] Opening world: '+worlds[i].name,'li2');alert('Starting world: '+worlds[i].name+'\n\nIn the real launcher this launches Minecraft and loads your world.');}
+function delW(i){if(!confirm('Delete "'+worlds[i].name+'"?'))return;addLog('[INFO] World deleted: '+worlds[i].name,'lw');worlds.splice(i,1);renderWorlds();}
+
+/* SERVERS */
+var servers=[];
+function addSrv(){
+  var name=document.getElementById('srv-n').value.trim(),addr=document.getElementById('srv-a').value.trim();
+  if(!name){alert('Please enter a server name.');return;}
+  if(!addr){alert('Please enter a server address.');return;}
+  servers.push({name:name,addr:addr});
+  document.getElementById('srv-n').value='';document.getElementById('srv-a').value='';
+  renderSrv();addLog('[INFO] Server added: '+name+' ('+addr+')','li2');
+}
+function renderSrv(){
+  var list=document.getElementById('srvlist'),empty=document.getElementById('srvempty');
+  if(servers.length===0){list.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';list.innerHTML='';
+  servers.forEach(function(s,i){
+    var d=document.createElement('div');d.className='lcard';
+    d.innerHTML='<div style="width:30px;height:30px;background:#1e1e1e;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="#FFD600"><path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.89 2-2V5c0-1.11-.89-2-2-2zm0 5h-2V5h2v3z"/></svg></div>'
+      +'<div class="lci"><h3>'+esc(s.name)+'</h3><p>'+esc(s.addr)+'</p></div>'
+      +'<div class="lcr"><button class="btn" style="font-size:8px;padding:6px 12px" onclick="joinS('+i+')">JOIN</button>'
+      +'<button class="btn red" style="font-size:8px;padding:6px 10px" onclick="delS('+i+')">X</button></div>';
+    list.appendChild(d);
+  });
+}
+function joinS(i){addLog('[INFO] Joining: '+servers[i].addr,'li2');alert('Connecting to: '+servers[i].addr+'\n\nIn the real launcher this launches Minecraft and connects to this server.');}
+function delS(i){if(!confirm('Remove "'+servers[i].name+'"?'))return;addLog('[INFO] Server removed: '+servers[i].name,'lw');servers.splice(i,1);renderSrv();}
+
+/* SKIN */
+function loadSkin(){
+  var u=document.getElementById('skin-u').value.trim();if(!u){alert('Enter your Minecraft username.');return;}
+  document.getElementById('skin-lbl').textContent=u+"'s Skin";
+  addLog('[INFO] Loading skin: '+u,'li2');window.open('https://namemc.com/profile/'+u,'_blank');
+}
+
+/* FOLDERS */
+function openF(t){addLog('[INFO] Opened folder: '+t,'li2');alert('Opening '+t+' folder.\n\nIn the real launcher this opens the actual folder on your computer.');}
+
+/* PACKS */
+function installPk(n){addLog('[INFO] Installing: '+n,'li2');setTimeout(function(){addLog('[OK] Installed: '+n,'lk');},1800);alert('Installing '+n+'...\n\nIn the real launcher this downloads and installs the pack automatically.');}
+
+/* SETTINGS */
+function saveSet(){addLog('[INFO] Settings saved','lk');alert('Settings saved.');}
+
+/* LOG */
+function addLog(msg,cls){
+  var box=document.getElementById('logbox'),d=document.createElement('div');
+  if(cls)d.className=cls;
+  d.textContent='['+new Date().toTimeString().split(' ')[0]+'] '+msg;
+  box.appendChild(d);box.scrollTop=box.scrollHeight;
+}
+function clearLog(){document.getElementById('logbox').innerHTML='<div class="lk">[OK] Log cleared</div>';}
+
+/* AI */
+var aiK={
+  crash:'> Found crash: out of memory\n> Increasing Java RAM to 3 GB\n> Please relaunch Minecraft',
+  lag:'> Lag detected\n> Reducing render distance to 8\n> Enabling FPS Boost mode',
+  skin:'> Go to the Skin tab\n> Enter your Minecraft username\n> Pigeon opens your NameMC profile',
+  mod:'> Go to Mods and Packs tab\n> Select Forge or Fabric loader first\n> Drop .jar files in the mods folder',
+  server:'> Go to the Multiplayer tab\n> Enter the server name and address\n> Click ADD SERVER then JOIN',
+  error:'> Scanning for errors...\n> No critical errors found\n> Your game should run fine',
+  fps:'> FPS Boost is active\n> Reduce render distance in Settings for more FPS',
+  virus:'> Run Virus Scan from the Home tab\n> Restart your computer if a threat is found\n> Pigeon removes it on next launch',
+  default:'> Describe your problem and I will fix it\n> Or press AUTO-FIX to scan everything'
+};
+function sendAI(){
+  var inp=document.getElementById('ai-in'),msg=inp.value.trim();if(!msg)return;inp.value='';
+  var chat=document.getElementById('aichat');
+  var ud=document.createElement('div');ud.className='aimsg u';
+  ud.innerHTML='<div class="aiav" style="background:#1e3a5f;color:#60a5fa;">YOU</div><div class="aibub">'+esc(msg)+'</div>';
+  chat.appendChild(ud);chat.scrollTop=chat.scrollHeight;
+  setTimeout(function(){
+    var key=Object.keys(aiK).find(function(k){return msg.toLowerCase().includes(k);})||'default';
+    var ad=document.createElement('div');ad.className='aimsg';
+    ad.innerHTML='<div class="aiav">AI</div><div class="aibub">'+aiK[key].replace(/\n/g,'<br>')+'</div>';
+    chat.appendChild(ad);chat.scrollTop=chat.scrollHeight;addLog('[AI] Responded','li2');
+  },500);
+}
+function autoFix(){
+  var chat=document.getElementById('aichat'),ad=document.createElement('div');ad.className='aimsg';
+  ad.innerHTML='<div class="aiav">AI</div><div class="aibub">&gt; Auto-Fix running...<br>&gt; Scanning game files... OK<br>&gt; Checking Java... OK<br>&gt; Verifying assets... OK<br>&gt; Cache cleared... OK<br>&gt; No errors found. Ready to launch.</div>';
+  chat.appendChild(ad);chat.scrollTop=chat.scrollHeight;addLog('[OK] Auto-fix complete: no errors found','lk');
+}
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+renderWorlds();renderSrv();
+</script>
+</body>
+</html>
